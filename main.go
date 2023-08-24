@@ -19,7 +19,7 @@ func readSQL(fileName string) string {
 	return fileString
 }
 
-func createMapping() map[string]string {
+func createMapping(env string) map[string]string {
 	mappingFile, err := os.ReadFile("mappings.json")
 	if err != nil {
 		panic(err)
@@ -27,12 +27,17 @@ func createMapping() map[string]string {
 	m := map[string]string{}
 
 	json.Unmarshal([]byte(mappingFile), &m)
-	fmt.Println(m)
+
+	for k, v := range m {
+		m[k] = strings.Replace(v, "${env}", env, 1)
+	}
 
 	// make ds_nodash current_date
 	dt := time.Now()
 	ds_nodash := fmt.Sprintf("%d-%d-%d", dt.Year(), dt.Month(), dt.Day())
+	ds := fmt.Sprintf("%d%d%d", dt.Year(), dt.Month(), dt.Day())
 	m["ds_nodash"] = ds_nodash
+	m["ds"] = ds
 
 	return m
 }
@@ -49,28 +54,53 @@ func exportToClipboard(templatedStr string) {
 
 func main() {
 	fmt.Println("Hello bqt!")
+	args := os.Args[1:]
+	fmt.Println(args)
+
+	if len(args) < 1 {
+		panic("Please give an input sql file")
+	}
 
 	// read in sql file
-	sqlFile := readSQL("wow.sql")
+	fileName := args[0]
+	sqlFile := readSQL(fileName)
+
+	var isTerraform bool
+	var env string
+	for i, _ := range args {
+		switch args[i] {
+		case "tf":
+			isTerraform = true
+		case "live":
+			env = "live"
+		case "dev":
+			env = "dev"
+		case "staging":
+			env = "staging"
+		}
+	}
 
 	// template/value mapping from 'mapping.json'
-	m := createMapping()
+	m := createMapping(env)
 
-	var formatString string
+	fmt.Println(env)
+
+	var formattedString string
 	tempFile := strings.Clone(sqlFile)
 
+	var template string
 	for k, v := range m {
-		// TODO: add branch for terraform/airflow
-		template := fmt.Sprintf("{{ %s }}", k)
-		formatString = strings.ReplaceAll(tempFile, template, v)
-		tempFile = strings.Clone(formatString)
+		if isTerraform {
+			template = fmt.Sprintf("${%s}", k)
+		} else {
+			template = fmt.Sprintf("{{ %s }}", k)
+		}
+		formattedString = strings.ReplaceAll(tempFile, template, v)
+		tempFile = strings.Clone(formattedString)
 	}
-	fmt.Println(formatString)
 
-	exportToClipboard(formatString)
-
+	exportToClipboard(formattedString)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
 	fmt.Println(string(curr_clipboard))
 
-	fmt.Println("byebye")
 }
