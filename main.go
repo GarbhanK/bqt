@@ -99,6 +99,6 @@ func main() {
 	// Send the templated string to the clipboard (doesn't work on linux)
 	exportToClipboard(formattedString)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
-	fmt.Println(string(curr_clipboard))
+	fmt.Print(string(curr_clipboard))
 
 }
