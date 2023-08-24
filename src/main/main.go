@@ -10,7 +10,7 @@ import (
 	"golang.design/x/clipboard"
 )
 
-func readSQL(fileName string) string {
+func ReadSQL(fileName string) string {
 	f, err := os.ReadFile(fileName)
 	if err != nil {
 		panic(err)
@@ -19,7 +19,7 @@ func readSQL(fileName string) string {
 	return fileString
 }
 
-func createMapping(env string) map[string]string {
+func CreateMapping(env string) map[string]string {
 	mappingFile, err := os.ReadFile("mappings.json")
 	if err != nil {
 		fmt.Printf("Cannot find 'mappings.json' file, %s", err.Error())
@@ -43,7 +43,7 @@ func createMapping(env string) map[string]string {
 	return m
 }
 
-func exportToClipboard(templatedStr string) {
+func ExportToClipboard(templatedStr string) {
 	err := clipboard.Init()
 	if err != nil {
 		fmt.Printf("Unable to init clipboard, %s", err.Error())
@@ -62,7 +62,7 @@ func main() {
 
 	// read in sql file
 	fileName := args[0]
-	sqlFile := readSQL(fileName)
+	sqlFile := ReadSQL(fileName)
 
 	var isTerraform bool
 	var quiet bool
@@ -83,7 +83,7 @@ func main() {
 	}
 
 	// template/value mapping from 'mapping.json'
-	m := createMapping(env)
+	m := CreateMapping(env)
 
 	var formattedString string
 	tempFile := strings.Clone(sqlFile)
@@ -100,14 +100,14 @@ func main() {
 	}
 
 	// Send the templated string to the clipboard (doesn't work on linux)
-	exportToClipboard(formattedString)
+	ExportToClipboard(formattedString)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
 
 	// don't print the output if quiet flag is provided
 	if quiet {
 		os.Exit(0)
 	} else {
-		fmt.Println(string(curr_clipboard))	
+		fmt.Println(string(curr_clipboard))
 	}
 
 }
