@@ -2,4 +2,3 @@
     "params.project": "ls-africa-data-eu-${env}",
     "params.web_project": "livescore-web"
 }
-

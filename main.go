@@ -56,7 +56,7 @@ func exportToClipboard(templatedStr string) {
 func main() {
 	args := os.Args[1:]
 	if len(args) < 1 {
-		fmt.Println("Please an input SQL file")
+		fmt.Println("First argument must be a sql file")
 		os.Exit(0)
 	}
 
@@ -65,6 +65,7 @@ func main() {
 	sqlFile := readSQL(fileName)
 
 	var isTerraform bool
+	var quiet bool
 	env := "dev"
 	for i, _ := range args {
 		switch args[i] {
@@ -76,6 +77,8 @@ func main() {
 			env = "dev"
 		case "staging":
 			env = "staging"
+		case "quiet":
+			quiet = true
 		}
 	}
 
@@ -99,6 +102,12 @@ func main() {
 	// Send the templated string to the clipboard (doesn't work on linux)
 	exportToClipboard(formattedString)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
-	fmt.Print(string(curr_clipboard))
+
+	// don't print the output if quiet flag is provided
+	if quiet {
+		os.Exit(0)
+	} else {
+		fmt.Println(string(curr_clipboard))	
+	}
 
 }
