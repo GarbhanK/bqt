@@ -22,7 +22,8 @@ func readSQL(fileName string) string {
 func createMapping(env string) map[string]string {
 	mappingFile, err := os.ReadFile("mappings.json")
 	if err != nil {
-		panic(err)
+		fmt.Printf("Cannot find 'mappings.json' file, %s", err.Error())
+		os.Exit(0)
 	}
 	m := map[string]string{}
 
@@ -53,12 +54,10 @@ func exportToClipboard(templatedStr string) {
 }
 
 func main() {
-	fmt.Println("Hello bqt!")
 	args := os.Args[1:]
-	fmt.Println(args)
-
 	if len(args) < 1 {
-		panic("Please give an input sql file")
+		fmt.Println("Please an input SQL file")
+		os.Exit(0)
 	}
 
 	// read in sql file
@@ -66,7 +65,7 @@ func main() {
 	sqlFile := readSQL(fileName)
 
 	var isTerraform bool
-	var env string
+	env := "dev"
 	for i, _ := range args {
 		switch args[i] {
 		case "tf":
@@ -83,8 +82,6 @@ func main() {
 	// template/value mapping from 'mapping.json'
 	m := createMapping(env)
 
-	fmt.Println(env)
-
 	var formattedString string
 	tempFile := strings.Clone(sqlFile)
 
@@ -99,6 +96,7 @@ func main() {
 		tempFile = strings.Clone(formattedString)
 	}
 
+	// Send the templated string to the clipboard (doesn't work on linux)
 	exportToClipboard(formattedString)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
 	fmt.Println(string(curr_clipboard))
