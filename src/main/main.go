@@ -20,7 +20,7 @@ func ReadSQL(fileName string) string {
 }
 
 func CreateMapping(env string) map[string]string {
-	mappingFile, err := os.ReadFile("/home/garbhan/Documents/bqt/mappings.json")
+	mappingFile, err := os.ReadFile("mappings.json")
 	if err != nil {
 		fmt.Printf("Cannot find 'mappings.json' file, %s\n", err.Error())
 		os.Exit(0)
