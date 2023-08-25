@@ -20,14 +20,20 @@ func ReadSQL(fileName string) string {
 	return fileString
 }
 
-func CreateMapping(env string) map[string]string {
+func CreateMapping(env string, isTest bool) map[string]string {
+
+	var mappingFilePath string
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mappingFilePath := fmt.Sprintf("%s/Documents/bqt/mappings.json", homeDir)
+	if isTest {
+		mappingFilePath = fmt.Sprintf("mappings.json")
+	} else {
+		mappingFilePath = fmt.Sprintf("%s/Documents/bqt/mappings.json", homeDir)
+	}
 	mappingFile, err := os.ReadFile(mappingFilePath)
 	if err != nil {
 		fmt.Printf("Cannot find 'mappings.json' file, %s\n", err.Error())
@@ -74,6 +80,8 @@ func main() {
 
 	var isTerraform bool
 	var quiet bool
+	var isTest bool
+
 	env := "dev"
 	for i, _ := range args {
 		switch args[i] {
@@ -87,11 +95,13 @@ func main() {
 			env = "staging"
 		case "quiet":
 			quiet = true
+		case "testMap":
+			isTest = true
 		}
 	}
 
 	// template/value mapping from 'mapping.json'
-	m := CreateMapping(env)
+	m := CreateMapping(env, isTest)
 
 	var formattedString string
 	tempFile := strings.Clone(sqlFile)
