@@ -6,20 +6,25 @@ import (
 	"time"
 )
 
-// go test -v tests/main_test.go
-
 func TestReadSQL(t *testing.T) {
 
 	result := ReadSQL("test.sql")
-	var expected string
 
-	expected = "select * from from `{{ params.project }}.transactions.coffee`" +
-		"c where date(insertionTimestamp) >= '{{ ds_nodash }}'" +
-		"left join `{{ params.web_project }}.unified_segment.tracks` t" +
-		"on c.userId = t.userId group by insertionTimestamp desc"
+	sql := "select * from `{{ params.project }}.transactions.coffee` c\n"
+	sql += "where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
+	sql += "left join `{{ params.web_project }}.unified_segment.tracks` t\n"
+	sql += "on c.userId = t.userId\n"
+	sql += "group by insertionTimestamp desc"
+	expected := sql
 
-	t.Log(result)
-	t.Log(expected)
+	t.Logf("result: %s\n", result)
+	t.Logf("expected: %s\n", expected)
+
+	if len(result) > 0 {
+		t.Logf("ReadSQL('test.sql') PASSED. Is not an empty string\n")
+	} else {
+		t.Errorf("ReadSQL('test.sql') FAILED. Got an empty string\n")
+	}
 
 	if result != expected {
 		t.Errorf("ReadSQL('test.sql') FAILED. Expected %s, got %s\n", expected, result)
