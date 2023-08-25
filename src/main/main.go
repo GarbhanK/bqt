@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -20,7 +21,14 @@ func ReadSQL(fileName string) string {
 }
 
 func CreateMapping(env string) map[string]string {
-	mappingFile, err := os.ReadFile("mappings.json")
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mappingFilePath := fmt.Sprintf("%s/Documents/bqt/mappings.json", homeDir)
+	mappingFile, err := os.ReadFile(mappingFilePath)
 	if err != nil {
 		fmt.Printf("Cannot find 'mappings.json' file, %s\n", err.Error())
 		os.Exit(0)
