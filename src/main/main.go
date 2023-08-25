@@ -41,6 +41,7 @@ func CreateMapping(env string, isTest bool) map[string]string {
 	}
 	m := map[string]string{}
 
+	// read json file into a map[string]string
 	json.Unmarshal([]byte(mappingFile), &m)
 
 	for k, v := range m {
@@ -82,6 +83,7 @@ func main() {
 	var quiet bool
 	var isTest bool
 
+	// defaults to dev for safety
 	env := "dev"
 	for i, _ := range args {
 		switch args[i] {
