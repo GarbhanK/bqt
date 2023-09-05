@@ -36,7 +36,7 @@ func CreateMapping(env string, isTest bool) map[string]string {
 	}
 	mappingFile, err := os.ReadFile(mappingFilePath)
 	if err != nil {
-		fmt.Printf("Cannot find 'mappings.json' file, %s\n", err.Error())
+		fmt.Printf("Cannot find 'mappings.json' file in path %s, %s\n", mappingFilePath, err.Error())
 		os.Exit(0)
 	}
 	m := map[string]string{}
@@ -48,12 +48,19 @@ func CreateMapping(env string, isTest bool) map[string]string {
 		m[k] = strings.Replace(v, "${env}", env, 1)
 	}
 
-	// make ds_nodash current_date
-	dt := time.Now()
-	ds_nodash := fmt.Sprintf("%d-%d-%d", dt.Year(), dt.Month(), dt.Day())
-	ds := fmt.Sprintf("%d%d%d", dt.Year(), dt.Month(), dt.Day())
+	// grab the current airflow date (today -1)
+	dt := time.Now().AddDate(0, 0, -1)
+	ds := fmt.Sprintf("%d-%d-%d", dt.Year(), dt.Month(), dt.Day())
+	ds_nodash := fmt.Sprintf("%d%d%d", dt.Year(), dt.Month(), dt.Day())
+	ts := fmt.Sprint(dt)
+	yesterday_ds := fmt.Sprint(dt.AddDate(0, 0, -1))
+	tomorrow_ds := fmt.Sprint(dt.AddDate(0, 0, 1))
+
 	m["ds_nodash"] = ds_nodash
 	m["ds"] = ds
+	m["ts"] = ts
+	m["yesterday_ds"] = yesterday_ds
+	m["tomorrow_ds"] = tomorrow_ds
 
 	return m
 }
