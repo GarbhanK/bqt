@@ -55,7 +55,6 @@ func CreateMapping(env string, isTest bool) map[string]string {
 	ts := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d+00:00",
 		dt.Year(), dt.Month(), dt.Day(),
 		dt.Hour(), dt.Minute(), dt.Second())
-	fmt.Println(ts)
 	yesterday_ds := fmt.Sprint(dt.AddDate(0, 0, -1))
 	tomorrow_ds := fmt.Sprint(dt.AddDate(0, 0, 1))
 
@@ -86,8 +85,8 @@ func main() {
 	}
 
 	// read in sql file
-	fileName := args[0]
-	sqlFile := ReadSQL(fileName)
+	// fileName := args[0]
+	// sqlFile := ReadSQL(fileName)
 
 	var isTerraform bool
 	var quiet bool
@@ -115,8 +114,11 @@ func main() {
 	// template/value mapping from 'mapping.json'
 	m := CreateMapping(env, isTest)
 
-	var formattedString string
-	tempFile := strings.Clone(sqlFile)
+	// read in sql file
+	fileName := args[0]
+	sqlFile := ReadSQL(fileName)
+
+	sqlFilePointer := &sqlFile
 
 	var template string
 	for k, v := range m {
@@ -125,12 +127,11 @@ func main() {
 		} else {
 			template = fmt.Sprintf("{{ %s }}", k)
 		}
-		formattedString = strings.ReplaceAll(tempFile, template, v)
-		tempFile = strings.Clone(formattedString)
+		*sqlFilePointer = strings.ReplaceAll(*sqlFilePointer, template, v)
 	}
 
 	// Send the templated string to the clipboard (doesn't work on linux)
-	ExportToClipboard(formattedString)
+	ExportToClipboard(sqlFile)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
 
 	// don't print the output if quiet flag is provided
