@@ -8,17 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/garbhank/bqt/src/templater"
 	"golang.design/x/clipboard"
 )
-
-func ReadSQL(fileName string) string {
-	f, err := os.ReadFile(fileName)
-	if err != nil {
-		panic(err)
-	}
-	fileString := string(f)
-	return fileString
-}
 
 func CreateMapping(env string, isTest bool) map[string]string {
 
@@ -48,8 +40,14 @@ func CreateMapping(env string, isTest bool) map[string]string {
 		m[k] = strings.Replace(v, "${env}", env, 1)
 	}
 
+	return m
+}
+
+func addAirflowTemplateVars(m map[string]string) map[string]string {
 	// grab the current airflow date (today -1)
 	dt := time.Now().AddDate(0, 0, -1)
+
+	// create airflow template variables ref: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
 	ds := fmt.Sprintf("%d-%02d-%02d", dt.Year(), dt.Month(), dt.Day())
 	ds_nodash := fmt.Sprintf("%02d%02d%02d", dt.Year(), dt.Month(), dt.Day())
 	ts := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d+00:00",
@@ -58,8 +56,8 @@ func CreateMapping(env string, isTest bool) map[string]string {
 	yesterday_ds := fmt.Sprint(dt.AddDate(0, 0, -1))
 	tomorrow_ds := fmt.Sprint(dt.AddDate(0, 0, 1))
 
-	m["ds_nodash"] = ds_nodash
 	m["ds"] = ds
+	m["ds_nodash"] = ds_nodash
 	m["ts"] = ts
 	m["yesterday_ds"] = yesterday_ds
 	m["tomorrow_ds"] = tomorrow_ds
@@ -77,23 +75,6 @@ func ExportToClipboard(templatedStr string) {
 	clipboard.Write(clipboard.FmtText, byteSql)
 }
 
-func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
-	sqlFile := ReadSQL(fileName)
-	sqlFilePointer := &sqlFile
-
-	var template string
-	for k, v := range mapping {
-		if isTerraform {
-			template = fmt.Sprintf("${%s}", k)
-		} else {
-			template = fmt.Sprintf("{{ %s }}", k)
-		}
-		*sqlFilePointer = strings.ReplaceAll(*sqlFilePointer, template, v)
-	}
-
-	return sqlFile
-}
-
 func main() {
 	args := os.Args[1:]
 	if len(args) < 1 {
@@ -107,7 +88,7 @@ func main() {
 
 	// defaults to dev for safety
 	env := "dev"
-	for i, _ := range args {
+	for i := range args {
 		switch args[i] {
 		case "tf":
 			isTerraform = true
@@ -126,10 +107,11 @@ func main() {
 
 	// template/value mapping from 'mapping.json'
 	m := CreateMapping(env, isTest)
+	m = addAirflowTemplateVars(m)
 
 	// read in sql file
 	fileName := args[0]
-	templatedSQL := TemplateSQLFile(fileName, isTerraform, m)
+	templatedSQL := templater.TemplateSQLFile(fileName, isTerraform, m)
 
 	// Send the templated string to the clipboard (doesn't work on linux)
 	ExportToClipboard(templatedSQL)

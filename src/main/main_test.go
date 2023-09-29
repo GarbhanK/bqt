@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"testing"
 	"time"
+
+	"github.com/garbhank/bqt/src/templater"
 )
 
 func TestReadSQL(t *testing.T) {
 
-	result := ReadSQL("test.sql")
+	result := templater.ReadSQL("test.sql")
 
 	sql := "select * from `{{ params.project }}.transactions.coffee` c\n"
 	sql += "where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
@@ -31,7 +33,7 @@ func TestReadSQL(t *testing.T) {
 }
 
 func TestReadSQLTerraform(t *testing.T) {
-   	result := ReadSQL("terraform_template.sql")
+	result := templater.ReadSQL("terraform_template.sql")
 
 	sql := "select * from `${params.project}.transactions.coffee` c\n"
 	sql += "where date(insertionTimestamp) >= '${ds_nodash}'\n"
