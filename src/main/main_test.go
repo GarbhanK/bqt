@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/garbhank/bqt/src/parser"
 	"github.com/garbhank/bqt/src/templater"
 )
 
@@ -67,14 +68,14 @@ func TestCreateMapping(t *testing.T) {
 		"params.web_project": "livescore-web",
 	}
 
-	result_live := CreateMapping("live", true)
+	result_live := parser.CreateMapping("live", true)
 	expected_live := make(map[string]string)
 	for k, v := range expected {
 		expected_live[k] = v
 	}
 	expected_live["params.project"] = "ls-africa-data-eu-live"
 
-	result_dev := CreateMapping("dev", true)
+	result_dev := parser.CreateMapping("dev", true)
 	expected_dev := make(map[string]string)
 	for k, v := range expected {
 		expected_dev[k] = v
