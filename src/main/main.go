@@ -77,16 +77,29 @@ func ExportToClipboard(templatedStr string) {
 	clipboard.Write(clipboard.FmtText, byteSql)
 }
 
+func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
+	sqlFile := ReadSQL(fileName)
+	sqlFilePointer := &sqlFile
+
+	var template string
+	for k, v := range mapping {
+		if isTerraform {
+			template = fmt.Sprintf("${%s}", k)
+		} else {
+			template = fmt.Sprintf("{{ %s }}", k)
+		}
+		*sqlFilePointer = strings.ReplaceAll(*sqlFilePointer, template, v)
+	}
+
+	return sqlFile
+}
+
 func main() {
 	args := os.Args[1:]
 	if len(args) < 1 {
 		fmt.Println("First argument must be a sql file")
 		os.Exit(0)
 	}
-
-	// read in sql file
-	// fileName := args[0]
-	// sqlFile := ReadSQL(fileName)
 
 	var isTerraform bool
 	var quiet bool
@@ -116,22 +129,10 @@ func main() {
 
 	// read in sql file
 	fileName := args[0]
-	sqlFile := ReadSQL(fileName)
-
-	sqlFilePointer := &sqlFile
-
-	var template string
-	for k, v := range m {
-		if isTerraform {
-			template = fmt.Sprintf("${%s}", k)
-		} else {
-			template = fmt.Sprintf("{{ %s }}", k)
-		}
-		*sqlFilePointer = strings.ReplaceAll(*sqlFilePointer, template, v)
-	}
+	templatedSQL := TemplateSQLFile(fileName, isTerraform, m)
 
 	// Send the templated string to the clipboard (doesn't work on linux)
-	ExportToClipboard(sqlFile)
+	ExportToClipboard(templatedSQL)
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
 
 	// don't print the output if quiet flag is provided
