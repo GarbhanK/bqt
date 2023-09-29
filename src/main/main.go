@@ -30,7 +30,7 @@ func CreateMapping(env string, isTest bool) map[string]string {
 	}
 
 	if isTest {
-		mappingFilePath = fmt.Sprintf("mappings.json")
+		mappingFilePath = "./mappings.json"
 	} else {
 		mappingFilePath = fmt.Sprintf("%s/Documents/bqt/mappings.json", homeDir)
 	}
@@ -50,9 +50,12 @@ func CreateMapping(env string, isTest bool) map[string]string {
 
 	// grab the current airflow date (today -1)
 	dt := time.Now().AddDate(0, 0, -1)
-	ds := fmt.Sprintf("%d-%d-%d", dt.Year(), dt.Month(), dt.Day())
-	ds_nodash := fmt.Sprintf("%d%d%d", dt.Year(), dt.Month(), dt.Day())
-	ts := fmt.Sprint(dt)
+	ds := fmt.Sprintf("%d-%02d-%02d", dt.Year(), dt.Month(), dt.Day())
+	ds_nodash := fmt.Sprintf("%02d%02d%02d", dt.Year(), dt.Month(), dt.Day())
+	ts := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d+00:00",
+		dt.Year(), dt.Month(), dt.Day(),
+		dt.Hour(), dt.Minute(), dt.Second())
+	fmt.Println(ts)
 	yesterday_ds := fmt.Sprint(dt.AddDate(0, 0, -1))
 	tomorrow_ds := fmt.Sprint(dt.AddDate(0, 0, 1))
 
