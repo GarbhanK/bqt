@@ -19,7 +19,7 @@ func CreateMapping(env string, isTest bool) map[string]string {
 	}
 
 	if isTest {
-		mappingFilePath = "./mappings.json"
+		mappingFilePath = "./test_mappings.json"
 	} else {
 		mappingFilePath = fmt.Sprintf("%s/Documents/bqt/mappings.json", homeDir)
 	}

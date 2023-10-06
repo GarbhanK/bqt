@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/garbhank/bqt/src/parser"
 	"github.com/garbhank/bqt/src/templater"
@@ -58,41 +57,33 @@ func TestReadSQLTerraform(t *testing.T) {
 
 func TestCreateMapping(t *testing.T) {
 
-	dt := time.Now()
-	ds_nodash := fmt.Sprintf("%d-%d-%d", dt.Year(), dt.Month(), dt.Day())
-	ds := fmt.Sprintf("%d%d%d", dt.Year(), dt.Month(), dt.Day())
-
-	expected := map[string]string{
-		"ds":                 ds,
-		"ds_nodash":          ds_nodash,
+	expected_live := map[string]string{
+		"params.project":     "gk-africa-data-eu-live",
 		"params.web_project": "livescore-web",
+		"environment":        "live",
 	}
 
 	result_live := parser.CreateMapping("live", true)
-	expected_live := make(map[string]string)
-	for k, v := range expected {
-		expected_live[k] = v
+
+	expected_dev := map[string]string{
+		"params.project":     "gk-africa-data-eu-dev",
+		"params.web_project": "livescore-web",
+		"environment":        "dev",
 	}
-	expected_live["params.project"] = "ls-africa-data-eu-live"
 
 	result_dev := parser.CreateMapping("dev", true)
-	expected_dev := make(map[string]string)
-	for k, v := range expected {
-		expected_dev[k] = v
-	}
-	expected_dev["params.project"] = "ls-africa-data-eu-dev"
 
 	eq_live := fmt.Sprint(result_live) == fmt.Sprint(expected_live)
 	if eq_live {
-		t.Logf("CreateMapping('live') PASSED. Expected %s, got %s\n", expected_live, result_live)
+		t.Logf("CreateMapping('live') PASSED. Expected %s\n, got %s\n", expected_live, result_live)
 	} else {
-		t.Errorf("CreateMapping('live') FAILED. Expected %s, got %s\n", expected_live, result_live)
+		t.Errorf("CreateMapping('live') FAILED. Expected %s\n, got %s\n", expected_live, result_live)
 	}
 
 	eq_dev := fmt.Sprint(result_dev) == fmt.Sprint(expected_dev)
 	if eq_dev {
-		t.Logf("CreateMapping('dev') PASSED. Expected %s, got %s\n", expected_dev, result_dev)
+		t.Logf("CreateMapping('dev') PASSED. Expected %s\n, got %s\n", expected_dev, result_dev)
 	} else {
-		t.Errorf("CreateMapping('dev') FAILED. Expected %s, got %s\n", expected_dev, result_dev)
+		t.Errorf("CreateMapping('dev') FAILED. Expected %s\n, got %s\n", expected_dev, result_dev)
 	}
 }
