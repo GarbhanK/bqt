@@ -17,7 +17,7 @@ func ReadSQL(fileName string) string {
 
 func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
 	sqlFile := ReadSQL(fileName)
-	sqlFilePointer := &sqlFile
+	sqlFilePtr := &sqlFile
 
 	var template string
 	for k, v := range mapping {
@@ -26,7 +26,7 @@ func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]strin
 		} else {
 			template = fmt.Sprintf("{{ %s }}", k)
 		}
-		*sqlFilePointer = strings.ReplaceAll(*sqlFilePointer, template, v)
+		*sqlFilePtr = strings.ReplaceAll(*sqlFilePtr, template, v)
 	}
 
 	return sqlFile
