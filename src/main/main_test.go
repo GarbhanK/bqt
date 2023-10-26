@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/garbhank/bqt/src/parser"
+	"github.com/garbhank/bqt/src/mapper"
 	"github.com/garbhank/bqt/src/templater"
 )
 
@@ -63,7 +63,7 @@ func TestCreateMapping(t *testing.T) {
 		"environment":        "live",
 	}
 
-	result_live := parser.CreateMapping("live", true)
+	result_live := mapper.CreateMapping("live", true)
 
 	expected_dev := map[string]string{
 		"params.project":     "gk-africa-data-eu-dev",
@@ -71,7 +71,7 @@ func TestCreateMapping(t *testing.T) {
 		"environment":        "dev",
 	}
 
-	result_dev := parser.CreateMapping("dev", true)
+	result_dev := mapper.CreateMapping("dev", true)
 
 	eq_live := fmt.Sprint(result_live) == fmt.Sprint(expected_live)
 	if eq_live {

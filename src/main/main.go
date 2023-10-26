@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/garbhank/bqt/src/parser"
+	"github.com/garbhank/bqt/src/mapper"
 	"github.com/garbhank/bqt/src/templater"
 	"golang.design/x/clipboard"
 )
@@ -50,8 +50,8 @@ func main() {
 	}
 
 	// template/value mapping from 'mapping.json'
-	m := parser.CreateMapping(env, isTest)
-	m = parser.AddAirflowTemplateVars(m)
+	m := mapper.CreateMapping(env, isTest)
+	m = mapper.AddAirflowTemplateVars(m)
 
 	// read in sql file
 	fileName := args[0]

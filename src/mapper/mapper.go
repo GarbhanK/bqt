@@ -1,4 +1,4 @@
-package parser
+package mapper
 
 import (
 	"encoding/json"
