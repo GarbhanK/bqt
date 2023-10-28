@@ -29,9 +29,8 @@ func main() {
 	var isTerraform bool
 	var quiet bool
 	var isTest bool
+	var env string = "dev" // defaults to dev for safety
 
-	// defaults to dev for safety
-	env := "dev"
 	for i := range args {
 		switch args[i] {
 		case "tf":
