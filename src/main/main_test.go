@@ -7,6 +7,10 @@ import (
 )
 
 func TestExportToClipboard(t *testing.T) {
+	err := clipboard.Init()
+	if err != nil {
+		fmt.Printf("Unable to init clipboard, %s", err.Error())
+	}
 
 	var input_string string = "select * from `table` where query_type = 'test'"
 	ExportToClipboard(input_string)
