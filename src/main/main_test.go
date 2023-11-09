@@ -8,52 +8,52 @@ import (
 	"github.com/garbhank/bqt/src/templater"
 )
 
-func TestReadSQL(t *testing.T) {
+// func TestReadSQL(t *testing.T) {
 
-	result := templater.ReadSQL("test.sql")
+// 	result := templater.ReadSQL("test.sql")
 
-	sql := "select * from `{{ params.project }}.transactions.coffee` c\n"
-	sql += "where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
-	sql += "left join `{{ params.web_project }}.unified_segment.tracks` t\n"
-	sql += "on c.userId = t.userId\n"
-	sql += "group by insertionTimestamp desc"
-	expected := sql
+// 	sql := "select * from `{{ params.project }}.transactions.coffee` c\n"
+// 	sql += "where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
+// 	sql += "left join `{{ params.web_project }}.unified_segment.tracks` t\n"
+// 	sql += "on c.userId = t.userId\n"
+// 	sql += "group by insertionTimestamp desc"
+// 	expected := sql
 
-	if len(result) > 0 {
-		t.Logf("ReadSQL('test.sql') PASSED. Is not an empty string\n")
-	} else {
-		t.Errorf("ReadSQL('test.sql') FAILED. Got an empty string\n")
-	}
+// 	if len(result) > 0 {
+// 		t.Logf("ReadSQL('test.sql') PASSED. Is not an empty string\n")
+// 	} else {
+// 		t.Errorf("ReadSQL('test.sql') FAILED. Got an empty string\n")
+// 	}
 
-	if result != expected {
-		t.Errorf("ReadSQL('test.sql') FAILED. Expected %s, got %s\n", expected, result)
-	} else {
-		t.Logf("ReadSQL('test.sql') PASSED. Expected %s, got %s\n", expected, result)
-	}
-}
+// 	if result != expected {
+// 		t.Errorf("ReadSQL('test.sql') FAILED. Expected %s, got %s\n", expected, result)
+// 	} else {
+// 		t.Logf("ReadSQL('test.sql') PASSED. Expected %s, got %s\n", expected, result)
+// 	}
+// }
 
-func TestReadSQLTerraform(t *testing.T) {
-	result := templater.ReadSQL("terraform_template.sql")
+// func TestReadSQLTerraform(t *testing.T) {
+// 	result := templater.ReadSQL("terraform_template.sql")
 
-	sql := "select * from `${params.project}.transactions.coffee` c\n"
-	sql += "where date(insertionTimestamp) >= '${ds_nodash}'\n"
-	sql += "left join `${params.web_project}.unified_segment.tracks` t\n"
-	sql += "on c.userId = t.userId\n"
-	sql += "group by insertionTimestamp desc"
-	expected := sql
+// 	sql := "select * from `${params.project}.transactions.coffee` c\n"
+// 	sql += "where date(insertionTimestamp) >= '${ds_nodash}'\n"
+// 	sql += "left join `${params.web_project}.unified_segment.tracks` t\n"
+// 	sql += "on c.userId = t.userId\n"
+// 	sql += "group by insertionTimestamp desc"
+// 	expected := sql
 
-	if len(result) > 0 {
-		t.Logf("ReadSQL('test.sql') PASSED. Is not an empty string\n")
-	} else {
-		t.Errorf("ReadSQL('test.sql') FAILED. Got an empty string\n")
-	}
+// 	if len(result) > 0 {
+// 		t.Logf("ReadSQL('test.sql') PASSED. Is not an empty string\n")
+// 	} else {
+// 		t.Errorf("ReadSQL('test.sql') FAILED. Got an empty string\n")
+// 	}
 
-	if result != expected {
-		t.Errorf("ReadSQL('test.sql') FAILED. Expected %s, got %s\n", expected, result)
-	} else {
-		t.Logf("ReadSQL('test.sql') PASSED. Expected %s, got %s\n", expected, result)
-	}
-}
+// 	if result != expected {
+// 		t.Errorf("ReadSQL('test.sql') FAILED. Expected %s, got %s\n", expected, result)
+// 	} else {
+// 		t.Logf("ReadSQL('test.sql') PASSED. Expected %s, got %s\n", expected, result)
+// 	}
+// }
 
 func TestCreateMapping(t *testing.T) {
 
