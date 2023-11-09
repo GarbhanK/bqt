@@ -1,7 +1,6 @@
 package templater
 
 import (
-	"fmt"
 	"testing"
 )
 
