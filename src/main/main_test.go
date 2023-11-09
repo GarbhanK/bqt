@@ -1,41 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/garbhank/bqt/src/mapper"
+	"golang.design/x/clipboard"
 )
 
-func TestCreateMapping(t *testing.T) {
+func TestExportToClipboard(t *testing.T) {
 
-	expected_live := map[string]string{
-		"params.project":     "gk-africa-data-eu-live",
-		"params.web_project": "livescore-web",
-		"environment":        "live",
-	}
+	var input_string string = "select * from `table` where query_type = 'test'"
+	ExportToClipboard(input_string)
 
-	result_live := mapper.CreateMapping("live", true)
+	output := string(clipboard.Read(clipboard.FmtText)) 
 
-	expected_dev := map[string]string{
-		"params.project":     "gk-africa-data-eu-dev",
-		"params.web_project": "livescore-web",
-		"environment":        "dev",
-	}
-
-	result_dev := mapper.CreateMapping("dev", true)
-
-	eq_live := fmt.Sprint(result_live) == fmt.Sprint(expected_live)
-	if eq_live {
-		t.Logf("CreateMapping('live') PASSED. Expected %s\n, got %s\n", expected_live, result_live)
+	if (len(output) <= 0) {
+		t.Error("Clipboard contents is either non-existent or empty\n")
+	} 
+	
+	if input_string == output {
+		t.Log("ExportToClipboard PASSED. Input string is equal to string read from clipboard\n")
 	} else {
-		t.Errorf("CreateMapping('live') FAILED. Expected %s\n, got %s\n", expected_live, result_live)
-	}
-
-	eq_dev := fmt.Sprint(result_dev) == fmt.Sprint(expected_dev)
-	if eq_dev {
-		t.Logf("CreateMapping('dev') PASSED. Expected %s\n, got %s\n", expected_dev, result_dev)
-	} else {
-		t.Errorf("CreateMapping('dev') FAILED. Expected %s\n, got %s\n", expected_dev, result_dev)
+		t.Error("ExportToClipboard FAILED. Mismatching input string and clipboard output\n")
 	}
 }
