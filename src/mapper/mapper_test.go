@@ -3,7 +3,6 @@ package mapper
 import (
 	"fmt"
 	"testing"
-	"time"
 )
 
 func TestCreateMappingLive(t *testing.T) {
