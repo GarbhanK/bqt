@@ -26,7 +26,7 @@ type options struct {
 	env string
 }
 
-func newOptions(env string) *options {
+func newOptions() *options {
 	
 	e := options{}
 	e.env = "dev"	// defaults to dev for safety
@@ -73,7 +73,7 @@ func main() {
 	curr_clipboard := clipboard.Read(clipboard.FmtText)
 
 	// don't print the output if quiet flag is provided
-	if quiet {
+	if opts.quiet {
 		os.Exit(0)
 	} else {
 		fmt.Println(string(curr_clipboard))
