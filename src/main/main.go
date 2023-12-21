@@ -19,6 +19,21 @@ func ExportToClipboard(templatedStr string) {
 	clipboard.Write(clipboard.FmtText, byteSql)
 }
 
+type options struct {
+	isTerraform bool
+	quiet bool
+	isTest bool
+	env string
+}
+
+func newOptions(env string) *options {
+	
+	e := options{}
+	e.env = "dev"	// defaults to dev for safety
+	return &e
+}
+
+
 func main() {
 	args := os.Args[1:]
 	if len(args) < 1 {
@@ -26,35 +41,32 @@ func main() {
 		os.Exit(0)
 	}
 
-	var isTerraform bool
-	var quiet bool
-	var isTest bool
-	var env string = "dev" // defaults to dev for safety
+	opts := newOptions()
 
 	for i := range args {
 		switch args[i] {
 		case "tf":
-			isTerraform = true
+			opts.isTerraform = true
 		case "live":
-			env = "live"
+			opts.env = "live"
 		case "dev":
-			env = "dev"
+			opts.env = "dev"
 		case "staging":
-			env = "staging"
+			opts.env = "staging"
 		case "quiet":
-			quiet = true
+			opts.quiet = true
 		case "testMap":
-			isTest = true
+			opts.isTest = true
 		}
 	}
 
 	// template/value mapping from 'mapping.json'
-	m := mapper.CreateMapping(env, isTest)
+	m := mapper.CreateMapping(opts.env, opts.isTest)
 	m = mapper.AddAirflowTemplateVars(m)
 
 	// read in sql file
 	fileName := args[0]
-	templatedSQL := templater.TemplateSQLFile(fileName, isTerraform, m)
+	templatedSQL := templater.TemplateSQLFile(fileName, opts.isTerraform, m)
 
 	// Send the templated string to the clipboard (doesn't work on linux)
 	ExportToClipboard(templatedSQL)
