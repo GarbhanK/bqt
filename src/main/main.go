@@ -20,6 +20,7 @@ func ExportToClipboard(templatedStr string) {
 }
 
 type options struct {
+	fileName string
 	isTerraform bool
 	quiet bool
 	isTest bool
@@ -29,7 +30,10 @@ type options struct {
 func newOptions() *options {
 	
 	e := options{}
+
 	e.env = "dev"	// defaults to dev for safety
+	e.fileName = os.Args[1]
+
 	return &e
 }
 
@@ -65,8 +69,10 @@ func main() {
 	m = mapper.AddAirflowTemplateVars(m)
 
 	// read in sql file
-	fileName := args[0]
-	templatedSQL := templater.TemplateSQLFile(fileName, opts.isTerraform, m)
+	// fileName := args[0]
+	templatedSQL := templater.TemplateSQLFile(opts.fileName, opts.isTerraform, m)
+
+	templater.ValidateSQL(templatedSQL)
 
 	// Send the templated string to the clipboard (doesn't work on linux)
 	ExportToClipboard(templatedSQL)

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	// "errors"
 
 	// "github.com/xwb1989/sqlparser"
+	"github.com/fatih/color"
 )
 
 func ReadSQL(fileName string) string {
@@ -43,6 +43,16 @@ func ReadSQL(fileName string) string {
 
 // 	return errors.New("Cannot validate query type...")
 // }
+
+func ValidateSQL(sqlFile string) {
+	formattedSQL := strings.ReplaceAll(sqlFile, "\n", " ")
+	queryWords := strings.Split(formattedSQL, " ")
+
+	var statementType string = queryWords[0]
+	if (strings.ToLower(statementType) == "create") {
+		color.Yellow("WARNING - copied query is a CREATE statement!\n")
+	}
+}
 
 
 func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
