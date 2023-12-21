@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"errors"
+	// "errors"
 
-	"github.com/xwb1989/sqlparser"
+	// "github.com/xwb1989/sqlparser"
 )
 
 func ReadSQL(fileName string) string {
@@ -20,29 +20,29 @@ func ReadSQL(fileName string) string {
 
 
 // This mostly works but I can't translate BigQuery SQL to MySQL (date function)
-func validateSQL(sqlFile string) error {
+// func validateSQL(sqlFile string) error {
 	
-	formattedSQL := strings.ReplaceAll(sqlFile, "\n", " ")
-	formattedSQL = strings.ReplaceAll(formattedSQL, "`", "'")
+// 	formattedSQL := strings.ReplaceAll(sqlFile, "\n", " ")
+// 	formattedSQL = strings.ReplaceAll(formattedSQL, "`", "'")
 
-	fmt.Printf(formattedSQL)
+// 	fmt.Printf(formattedSQL)
 
-	stmt, err := sqlparser.Parse(formattedSQL)
-	if err != nil {
-		panic(err)
-	}
+// 	stmt, err := sqlparser.Parse(formattedSQL)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	switch stmt := stmt.(type) {
-	case *sqlparser.Select:
-		_ = stmt
-		return nil
-	case *sqlparser.DBDDL:
-		fmt.Printf("DBDDL type")
-		return errors.New("Warning - your query is a CREATE, ALTER, DROP, RENAME or TRUNCATE statement")
-	}
+// 	switch stmt := stmt.(type) {
+// 	case *sqlparser.Select:
+// 		_ = stmt
+// 		return nil
+// 	case *sqlparser.DBDDL:
+// 		fmt.Printf("DBDDL type")
+// 		return errors.New("Warning - your query is a CREATE, ALTER, DROP, RENAME or TRUNCATE statement")
+// 	}
 
-	return errors.New("Cannot validate query type...")
-}
+// 	return errors.New("Cannot validate query type...")
+// }
 
 
 func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
