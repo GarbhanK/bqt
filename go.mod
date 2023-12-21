@@ -2,7 +2,10 @@ module github.com/garbhank/bqt
 
 go 1.20
 
-require golang.design/x/clipboard v0.7.0
+require (
+	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
+	golang.design/x/clipboard v0.7.0
+)
 
 require (
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect

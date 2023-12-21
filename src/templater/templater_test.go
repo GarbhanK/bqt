@@ -50,3 +50,14 @@ func TestReadSQLTerraform(t *testing.T) {
 		t.Logf("ReadSQL('test.sql') PASSED. Expected %s, got %s\n", expected, result)
 	}
 }
+
+// func TestValidateSQL(t *testing.T) {
+
+// 	err := validateSQL(sqlFile)
+
+// 	if err != nil {
+// 		t.Errorf("ValidateSQL('test.sql') FAILED")
+// 	} else {
+// 		t.Logf("ValidateSQL for 'test.sql' returns %b", result)
+// 	}
+// }

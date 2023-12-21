@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"errors"
+
+	"github.com/xwb1989/sqlparser"
 )
 
 func ReadSQL(fileName string) string {
@@ -14,6 +17,33 @@ func ReadSQL(fileName string) string {
 	fileString := string(f)
 	return fileString
 }
+
+
+// This mostly works but I can't translate BigQuery SQL to MySQL (date function)
+func validateSQL(sqlFile string) error {
+	
+	formattedSQL := strings.ReplaceAll(sqlFile, "\n", " ")
+	formattedSQL = strings.ReplaceAll(formattedSQL, "`", "'")
+
+	fmt.Printf(formattedSQL)
+
+	stmt, err := sqlparser.Parse(formattedSQL)
+	if err != nil {
+		panic(err)
+	}
+
+	switch stmt := stmt.(type) {
+	case *sqlparser.Select:
+		_ = stmt
+		return nil
+	case *sqlparser.DBDDL:
+		fmt.Printf("DBDDL type")
+		return errors.New("Warning - your query is a CREATE, ALTER, DROP, RENAME or TRUNCATE statement")
+	}
+
+	return errors.New("Cannot validate query type...")
+}
+
 
 func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
 	sqlFile := ReadSQL(fileName)
@@ -28,6 +58,12 @@ func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]strin
 		}
 		*sqlFilePtr = strings.ReplaceAll(*sqlFilePtr, template, v)
 	}
+
+	// err := validateSQL(sqlFile)
+	// if err != nil {
+	// 	fmt.Printf("Warning... your query is a CREATE statement...\n")
+	// 	panic(err)
+	// }
 
 	return sqlFile
 }
