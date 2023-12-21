@@ -18,10 +18,9 @@ func ReadSQL(fileName string) string {
 	return fileString
 }
 
-
 // This mostly works but I can't translate BigQuery SQL to MySQL (date function)
 // func validateSQL(sqlFile string) error {
-	
+
 // 	formattedSQL := strings.ReplaceAll(sqlFile, "\n", " ")
 // 	formattedSQL = strings.ReplaceAll(formattedSQL, "`", "'")
 
@@ -49,11 +48,10 @@ func ValidateSQL(sqlFile string) {
 	queryWords := strings.Split(formattedSQL, " ")
 
 	var statementType string = queryWords[0]
-	if (strings.ToLower(statementType) == "create") {
+	if strings.ToLower(statementType) == "create" {
 		color.Yellow("WARNING - copied query is a CREATE statement!\n")
 	}
 }
-
 
 func TemplateSQLFile(fileName string, isTerraform bool, mapping map[string]string) string {
 	sqlFile := ReadSQL(fileName)
