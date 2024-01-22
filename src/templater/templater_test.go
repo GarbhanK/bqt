@@ -2,7 +2,6 @@ package templater
 
 import (
 	"testing"
-	"fmt"
 )
 
 func TestReadSQL(t *testing.T) {
