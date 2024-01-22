@@ -2,17 +2,19 @@ package templater
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestReadSQL(t *testing.T) {
 
 	result := ReadSQL("test.sql")
 
-	sql := "select * from `{{ params.project }}.transactions.coffee` c\n"
-	sql += "where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
-	sql += "left join `{{ params.web_project }}.unified_segment.tracks` t\n"
-	sql += "on c.userId = t.userId\n"
-	sql += "group by insertionTimestamp desc"
+	sql := "select *\n"
+	sql += "  from `{{ params.project }}.transactions.coffee` c\n"
+	sql += "  left join `{{ params.web_project }}.unified_segment.tracks` t\n"
+	sql += "    on c.userId = t.userId\n"
+	sql += " where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
+	sql += " group by insertionTimestamp desc\n"
 	expected := sql
 
 	if len(result) > 0 {
@@ -22,9 +24,9 @@ func TestReadSQL(t *testing.T) {
 	}
 
 	if result != expected {
-		t.Errorf("ReadSQL('test.sql') FAILED. Expected %s, got %s\n", expected, result)
+		t.Errorf("ReadSQL('test.sql') FAILED. Expected... \n%s, got.. \n%s\n", expected, result)
 	} else {
-		t.Logf("ReadSQL('test.sql') PASSED. Expected %s, got %s\n", expected, result)
+		t.Logf("ReadSQL('test.sql') PASSED. Expected... \n%s, got... \n%s\n", expected, result)
 	}
 }
 
