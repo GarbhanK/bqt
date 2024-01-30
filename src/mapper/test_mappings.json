@@ -1,5 +1,5 @@
 {
-    "params.project": "gk-africa-data-eu-${env}",
-    "params.web_project": "testscore-web",
+    "params.project": "gk-data-eu-${env}",
+    "params.web_project": "my-webproject",
     "environment": "${env}"
 }

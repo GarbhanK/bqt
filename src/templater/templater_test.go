@@ -10,7 +10,7 @@ func TestReadSQL(t *testing.T) {
 
 	sql := "select *\n"
 	sql += "  from `{{ params.project }}.transactions.coffee` c\n"
-	sql += "  left join `{{ params.web_project }}.unified_segment.tracks` t\n"
+	sql += "  left join `{{ params.web_project }}.user_data.signup` t\n"
 	sql += "    on c.userId = t.userId\n"
 	sql += " where date(insertionTimestamp) >= '{{ ds_nodash }}'\n"
 	sql += " group by insertionTimestamp desc\n"
@@ -34,7 +34,7 @@ func TestReadSQLTerraform(t *testing.T) {
 
 	sql := "select * from `${params.project}.transactions.coffee` c\n"
 	sql += "where date(insertionTimestamp) >= '${ds_nodash}'\n"
-	sql += "left join `${params.web_project}.unified_segment.tracks` t\n"
+	sql += "left join `${params.web_project}.user_data.signup` t\n"
 	sql += "on c.userId = t.userId\n"
 	sql += "group by insertionTimestamp desc"
 	expected := sql
