@@ -8,8 +8,8 @@ import (
 func TestCreateMappingLive(t *testing.T) {
 
 	expected_live := map[string]string{
-		"params.project":     "gk-africa-data-eu-live",
-		"params.web_project": "testscore-web",
+		"params.project":     "gk-data-eu-live",
+		"params.web_project": "my-webproject",
 		"environment":        "live",
 	}
 
@@ -27,8 +27,8 @@ func TestCreateMappingLive(t *testing.T) {
 func TestCreateMappingDev(t *testing.T) {
 
 	expected_dev := map[string]string{
-		"params.project":     "gk-africa-data-eu-dev",
-		"params.web_project": "testscore-web",
+		"params.project":     "gk-data-eu-dev",
+		"params.web_project": "my-webproject",
 		"environment":        "dev",
 	}
 
